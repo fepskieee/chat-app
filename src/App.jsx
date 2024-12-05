@@ -9,6 +9,8 @@ import Login from "@/components/Login"
 import Register from "@/components/Register"
 import Chat from "@/components/Chat"
 import PrivateRoute from "@/components/PrivateRoute"
+import MessageLists from "@/components/MessageLists"
+import SendMessage from "@/components/SendMessage"
 
 function App() {
   return (
@@ -20,6 +22,8 @@ function App() {
         />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/messages" element={<MessageLists />} />
+        <Route path="/send" element={<SendMessage />} />
         <Route
           path="/chat"
           element={
