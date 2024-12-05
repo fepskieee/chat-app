@@ -11,6 +11,7 @@ import Chat from "@/components/Chat"
 import PrivateRoute from "@/components/PrivateRoute"
 import MessageLists from "@/components/MessageLists"
 import SendMessage from "@/components/SendMessage"
+import EmailComposer from "@/components/EmailComposer"
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/messages" element={<MessageLists />} />
         <Route path="/send" element={<SendMessage />} />
+        <Route path="/send" element={<EmailComposer />} />
         <Route
           path="/chat"
           element={
