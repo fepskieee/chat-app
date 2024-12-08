@@ -72,24 +72,25 @@ function Chat() {
   const sendMessage = async (e) => {
     e.preventDefault()
 
-    let attachmentUrl = null
-    if (attachment) {
-      attachmentUrl = await uploadFile(attachment)
-    }
-
     if (newMessage.trim() === "") return
+
+    const attachmentUrl = attachment ? await uploadFile(attachment) : null
 
     const userDoc = await getDoc(
       doc(firebaseDB, "users", firebaseAuth.currentUser.uid)
     )
     const username = userDoc.exists() ? userDoc.data().username : "Unknown User"
 
-    await addDoc(collection(firebaseDB, "messages"), {
+    const messageData = {
       text: newMessage,
       createdAt: new Date(),
       user: username,
-      attachment: { url: attachmentUrl, filename: attachment.name },
-    })
+      attachment: attachment
+        ? { url: attachmentUrl, filename: attachment.name }
+        : null,
+    }
+
+    await addDoc(collection(firebaseDB, "messages"), messageData)
 
     setNewMessage("")
     setAttachment(null)

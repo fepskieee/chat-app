@@ -9,13 +9,17 @@
     "lint": "eslint .",
     "preview": "vite preview"
   },
+  "proxy": "https://gmail.googleapis.com",
   "dependencies": {
     "@radix-ui/react-slot": "^1.1.0",
+    "@react-oauth/google": "^0.12.1",
     "@supabase/supabase-js": "^2.47.0",
+    "@twilio/voice-sdk": "^2.12.3",
     "axios": "^1.7.9",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "firebase": "^11.0.2",
+    "gapi-script": "^1.2.0",
     "lucide-react": "^0.466.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",

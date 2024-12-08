@@ -9,7 +9,7 @@ const SendMessage = () => {
     e.preventDefault()
 
     try {
-      const response = await fetch("http://localhost:5000/send-sms", {
+      const response = await fetch("http://localhost:80/send-sms", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

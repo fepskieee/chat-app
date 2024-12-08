@@ -1,9 +1,4 @@
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Navigate,
-} from "react-router-dom"
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
 
 import Login from "@/components/Login"
 import Register from "@/components/Register"
@@ -12,20 +7,49 @@ import PrivateRoute from "@/components/PrivateRoute"
 import MessageLists from "@/components/MessageLists"
 import SendMessage from "@/components/SendMessage"
 import EmailComposer from "@/components/EmailComposer"
+import EmailLists from "./components/EmailLists"
+import Main from "./components/ui/Main"
+import DialPad from "./components/DialPad"
 
 function App() {
   return (
     <Router>
       <Routes>
-        <Route
-          path="/"
-          element={<PrivateRoute element={<Navigate to="/chat" />} />}
-        />
+        <Route path="/" element={<DialPad />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/messages" element={<MessageLists />} />
-        <Route path="/send" element={<SendMessage />} />
-        <Route path="/send" element={<EmailComposer />} />
+        <Route
+          path="/messages"
+          element={
+            <PrivateRoute>
+              <MessageLists />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/send"
+          element={
+            <PrivateRoute>
+              <SendMessage />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/new-email"
+          element={
+            <PrivateRoute>
+              <EmailComposer />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/email"
+          element={
+            <PrivateRoute>
+              <EmailLists />
+            </PrivateRoute>
+          }
+        />
         <Route
           path="/chat"
           element={
@@ -48,4 +72,3 @@ function App() {
 }
 
 export default App
-
