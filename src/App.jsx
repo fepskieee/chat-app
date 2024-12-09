@@ -10,6 +10,7 @@ import EmailComposer from "@/components/EmailComposer"
 import EmailLists from "./components/EmailLists"
 import Main from "./components/ui/Main"
 import DialPad from "./components/DialPad"
+import VideoCall from "./components/VideoCall"
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
         <Route path="/" element={<DialPad />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/video" element={<VideoCall />} />
         <Route
           path="/inbox"
           element={
