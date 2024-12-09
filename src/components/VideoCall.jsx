@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react"
 import axios from "axios"
-import Video from "twilio-video"
+import { connect } from "twilio-video"
 
 const VideoCall = () => {
   const [isConnected, setIsConnected] = useState(false)
@@ -28,7 +28,7 @@ const VideoCall = () => {
       return
     }
 
-    Video.connect(token, {
+    connect(token, {
       name: "DailyStandupRoom", // Video room name
       audio: true,
       video: { width: 640 },
@@ -60,7 +60,7 @@ const VideoCall = () => {
         const localVideoTrack = localParticipant.videoTracks[0]?.track
         if (localVideoTrack) {
           const videoElement = document.getElementById("local-video")
-          videoElement.srcObject = new MediaStream([localVideoTrack])
+          localVideoTrack.attach(videoElement) // Attach track directly to the video element
         }
       })
       .catch((error) => {
@@ -76,20 +76,6 @@ const VideoCall = () => {
     setRoom(null)
     setLocalParticipant(null)
     setRemoteParticipants([])
-  }
-
-  const handleStartLocalVideo = async () => {
-    try {
-      const localMedia = await navigator.mediaDevices.getUserMedia({
-        video: true,
-        audio: true,
-      })
-
-      const videoElement = document.getElementById("local-video")
-      videoElement.srcObject = localMedia
-    } catch (error) {
-      console.error("Error starting local video:", error)
-    }
   }
 
   return (
@@ -113,15 +99,6 @@ const VideoCall = () => {
         )}
       </div>
 
-      {!isConnected && (
-        <button
-          className="bg-green-500 text-white px-4 py-2 rounded mb-8"
-          onClick={handleStartLocalVideo}
-        >
-          Start Local Video
-        </button>
-      )}
-
       {isConnected && (
         <div className="flex space-x-4">
           <div className="w-64 h-64 bg-gray-300 flex items-center justify-center">
@@ -135,6 +112,18 @@ const VideoCall = () => {
 
           <div id="remote-videos" className="flex flex-wrap space-x-4 mt-8">
             {/* Remote participant videos will be appended here dynamically */}
+            {remoteParticipants.map((participant) => (
+              <div
+                key={participant.sid}
+                className="w-64 h-64 bg-gray-300 flex items-center justify-center"
+              >
+                <video
+                  id={`remote-video-${participant.sid}`}
+                  autoPlay
+                  className="w-full h-full"
+                ></video>
+              </div>
+            ))}
           </div>
         </div>
       )}
