@@ -7,7 +7,6 @@ const VideoCall = () => {
   const [room, setRoom] = useState(null)
   const [token, setToken] = useState(null)
   const [localParticipant, setLocalParticipant] = useState(null)
-  const [videoTrack, setVideoTrack] = useState(null)
   const [remoteParticipants, setRemoteParticipants] = useState([])
 
   useEffect(() => {
@@ -44,8 +43,13 @@ const VideoCall = () => {
 
           participant.on("trackSubscribed", (track) => {
             if (track.kind === "video") {
-              const videoElement = document.getElementById("remote-video")
-              track.attach(videoElement)
+              // Dynamically create video element for remote participants
+              const videoElement = document.createElement("video")
+              videoElement.id = `remote-video-${participant.sid}` // Set unique ID
+              videoElement.autoplay = true
+              videoElement.className = "w-full h-full"
+              document.getElementById("remote-videos").appendChild(videoElement) // Add to remote-videos div
+              track.attach(videoElement) // Attach track to new element
             }
           })
         })
@@ -56,7 +60,7 @@ const VideoCall = () => {
         const localVideoTrack = localParticipant.videoTracks[0]?.track
         if (localVideoTrack) {
           const videoElement = document.getElementById("local-video")
-          localVideoTrack.attach(videoElement)
+          videoElement.srcObject = new MediaStream([localVideoTrack])
         }
       })
       .catch((error) => {
@@ -71,7 +75,6 @@ const VideoCall = () => {
     setIsConnected(false)
     setRoom(null)
     setLocalParticipant(null)
-    setVideoTrack(null)
     setRemoteParticipants([])
   }
 
@@ -84,7 +87,6 @@ const VideoCall = () => {
 
       const videoElement = document.getElementById("local-video")
       videoElement.srcObject = localMedia
-      setVideoTrack(localMedia.getVideoTracks()[0])
     } catch (error) {
       console.error("Error starting local video:", error)
     }
@@ -131,19 +133,9 @@ const VideoCall = () => {
             ></video>
           </div>
 
-          {remoteParticipants.length > 0 &&
-            remoteParticipants.map((participant, index) => (
-              <div
-                key={index}
-                className="w-64 h-64 bg-gray-300 flex items-center justify-center"
-              >
-                <video
-                  id={`remote-video-${participant.sid}`}
-                  autoPlay
-                  className="w-full h-full"
-                ></video>
-              </div>
-            ))}
+          <div id="remote-videos" className="flex flex-wrap space-x-4 mt-8">
+            {/* Remote participant videos will be appended here dynamically */}
+          </div>
         </div>
       )}
     </div>
