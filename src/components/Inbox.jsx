@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import axios from "axios"
 
-const MessageLists = () => {
+const Inbox = () => {
   const [messages, setMessages] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
@@ -9,7 +9,7 @@ const MessageLists = () => {
   useEffect(() => {
     const fetchMessages = async () => {
       try {
-        const response = await axios.get("http://localhost:80/messages")
+        const response = await axios.get("http://localhost:80/inbox")
 
         setMessages(response.data)
         setLoading(false)
@@ -76,4 +76,4 @@ const MessageLists = () => {
   )
 }
 
-export default MessageLists
+export default Inbox

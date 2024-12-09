@@ -47,12 +47,11 @@ const SendMessage = () => {
             <select
               value={countryCode}
               onChange={(e) => setCountryCode(e.target.value)}
-              className="border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-500"
+              className="border border-gray-300 rounded-md p-2 pr-6 focus:ring focus:ring-blue-500"
             >
               <option value="+1">+1 (USA)</option>
               <option value="+44">+44 (UK)</option>
               <option value="+91">+91 (India)</option>
-              {/* Add more country codes as needed */}
             </select>
             <input
               type="text"
@@ -62,7 +61,7 @@ const SendMessage = () => {
               onChange={(e) => setTo(e.target.value)}
               required
               placeholder="Recipient Number"
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring focus:ring-blue-500 transition duration-200 ease-in-out"
+              className="block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring focus:ring-blue-500 transition duration-200 ease-in-out"
             />
           </div>
           <div>

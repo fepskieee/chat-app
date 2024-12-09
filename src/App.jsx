@@ -4,7 +4,7 @@ import Login from "@/components/Login"
 import Register from "@/components/Register"
 import Chat from "@/components/Chat"
 import PrivateRoute from "@/components/PrivateRoute"
-import MessageLists from "@/components/MessageLists"
+import Inbox from "@/components/Inbox"
 import SendMessage from "@/components/SendMessage"
 import EmailComposer from "@/components/EmailComposer"
 import EmailLists from "./components/EmailLists"
@@ -19,15 +19,15 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route
-          path="/messages"
+          path="/inbox"
           element={
             <PrivateRoute>
-              <MessageLists />
+              <Inbox />
             </PrivateRoute>
           }
         />
         <Route
-          path="/send"
+          path="/send-sms"
           element={
             <PrivateRoute>
               <SendMessage />
