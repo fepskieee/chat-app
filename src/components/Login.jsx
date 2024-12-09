@@ -4,6 +4,7 @@ import {
   signInWithEmailAndPassword,
   onAuthStateChanged,
   signInWithPopup,
+  GoogleAuthProvider,
 } from "firebase/auth"
 
 import { firebaseAuth, firebaseGoogleProvider } from "@/firebase/firebaseConfig"
@@ -54,8 +55,11 @@ function Login({ setToken }) {
     )
 
     try {
-      await signInWithPopup(firebaseAuth, firebaseGoogleProvider)
-
+      const result = await signInWithPopup(firebaseAuth, firebaseGoogleProvider)
+      const credential = GoogleAuthProvider.credentialFromResult(result)
+      const { accessToken } = credential
+      console.log(credential)
+      localStorage.setItem("googleapi_accessToken", accessToken)
       navigate(from, { replace: true })
     } catch (error) {
       alert(error.message)
