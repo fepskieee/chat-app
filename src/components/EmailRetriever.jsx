@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react"
-import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth"
+import { useState, useEffect } from "react"
 import axios from "axios"
 import DOMPurify from "dompurify"
+import { Buffer } from "buffer"
 
 function EmailRetriever() {
   const [emails, setEmails] = useState([])
@@ -9,26 +9,6 @@ function EmailRetriever() {
   const [selectedEmail, setSelectedEmail] = useState(null)
 
   const fetchEmails = async () => {
-    const auth = getAuth()
-    const user = auth.currentUser
-
-    if (!user) {
-      try {
-        const result = await signInWithPopup(auth, new GoogleAuthProvider())
-
-        const credential = GoogleAuthProvider.credentialFromResult(result)
-
-        if (credential) {
-          const accessToken = credential.accessToken
-          localStorage.setItem("googleapi_accessToken", accessToken)
-        }
-      } catch (authError) {
-        setError("Authentication failed")
-        console.error(authError)
-        return
-      }
-    }
-
     const accessToken = localStorage.getItem("googleapi_accessToken")
 
     if (!accessToken) {
@@ -82,13 +62,13 @@ function EmailRetriever() {
     }
   }
 
-  const decodeBase64 = (str) => {
+  const decodeBase64 = (data) => {
     try {
       return atob(
-        str
+        data
           .replace(/-/g, "+")
           .replace(/_/g, "/")
-          .padEnd(str.length + ((4 - (str.length % 4)) % 4), "=")
+          .padEnd(data.length + ((4 - (data.length % 4)) % 4), "=")
       )
     } catch (error) {
       console.error("Base64 decoding error:", error)
@@ -105,26 +85,40 @@ function EmailRetriever() {
     const dateHeader = headers.find((h) => h.name === "Date")
 
     let body = ""
-    const extractBodyFromParts = (parts) => {
+    const attachments = []
+
+    const decodeBase64 = (data) => {
+      return Buffer.from(data, "base64").toString("utf8")
+    }
+
+    const extractParts = (parts) => {
       for (let part of parts) {
-        if (part.mimeType === "text/html" && part.body && part.body.data) {
-          return decodeBase64(part.body.data)
+        if (
+          (part.mimeType === "text/html" || part.mimeType === "text/plain") &&
+          part.body &&
+          part.body.data
+        ) {
+          body = decodeBase64(part.body.data)
         }
-        if (part.mimeType === "text/plain" && part.body && part.body.data) {
-          return decodeBase64(part.body.data)
+        if (part.filename && part.body && part.body.data) {
+          const attachment = {
+            filename: part.filename,
+            mimeType: part.mimeType,
+            size: part.body.size,
+            data: part.body.data,
+          }
+          attachments.push(attachment)
         }
         if (part.parts) {
-          const nestedBody = extractBodyFromParts(part.parts)
-          if (nestedBody) return nestedBody
+          extractParts(part.parts)
         }
       }
-      return ""
     }
 
     if (email.payload.body && email.payload.body.data) {
       body = decodeBase64(email.payload.body.data)
     } else if (email.payload.parts) {
-      body = extractBodyFromParts(email.payload.parts)
+      extractParts(email.payload.parts)
     }
 
     return {
@@ -134,6 +128,7 @@ function EmailRetriever() {
       date: dateHeader ? dateHeader.value : "Unknown Date",
       snippet: email.snippet || "",
       body: body,
+      attachments: attachments,
     }
   }
 
@@ -151,16 +146,13 @@ function EmailRetriever() {
       )
 
       const parsedEmail = parseEmailDetails(response.data)
+      console.log(parsedEmail)
       setSelectedEmail(parsedEmail)
     } catch (error) {
       console.error("Error fetching email content:", error)
       setError("Failed to fetch email content")
     }
   }
-
-  useEffect(() => {
-    fetchEmails()
-  }, [])
 
   const handleBackToList = () => {
     setSelectedEmail(null)
@@ -224,10 +216,33 @@ function EmailRetriever() {
               __html: DOMPurify.sanitize(selectedEmail.body || ""),
             }}
           />
+
+          <div className="mt-4">
+            <h3 className="font-bold">Attachments:</h3>
+            {selectedEmail.attachments.length === 0 ? (
+              <p>No attachments</p>
+            ) : (
+              selectedEmail.attachments.map((attachment, index) => (
+                <div key={index} className="mt-2">
+                  <a
+                    href={`data:${attachment.mimeType};base64,${attachment.data}`}
+                    download={attachment.filename}
+                    className="text-blue-600"
+                  >
+                    Download {attachment.filename}
+                  </a>
+                </div>
+              ))
+            )}
+          </div>
         </div>
       )}
     </div>
   )
+
+  useEffect(() => {
+    fetchEmails()
+  }, [])
 
   return <div>{selectedEmail ? renderEmailContent() : renderEmailList()}</div>
 }

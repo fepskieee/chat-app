@@ -1,20 +1,39 @@
 import axios from "axios"
-import { useState } from "react"
+import { useState, useRef } from "react"
 
 function EmailComposer() {
+  const fileInputRef = useRef(null)
   const [email, setEmail] = useState({
     to: "",
     subject: "",
     body: "",
+    attachments: [],
   })
+
+  // const handleFileChange = (e) => {
+  //   setEmail((prev) => ({ ...prev, attachments: e.target.files[0] }))
+  // }
 
   const handleSendEmail = async (e) => {
     e.preventDefault()
+
+    const formData = new FormData()
+    formData.append("to", email.to)
+    formData.append("subject", email.subject)
+    formData.append("body", email.body)
+
+    if (email.attachments && email.attachments.length > 0) {
+      email.attachments.forEach((file) => {
+        formData.append("attachments[]", file) // Attach each file under the key "attachments[]"
+      })
+    }
+
     try {
-      await axios.post("http://localhost:80/api/send-email", email)
+      await axios.post("http://localhost:80/send-email", formData)
+
+      setEmail({ ...email, to: "", subject: "", body: "", attachments: [] })
+      fileInputRef.current.value = null
       alert("Email sent successfully!")
-      // Reset form
-      setEmail({ to: "", subject: "", body: "" })
     } catch (error) {
       console.error("Email send failed", error)
       alert("Failed to send email")
@@ -49,6 +68,15 @@ function EmailComposer() {
         required
         className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
         rows="6"
+      />
+      <input
+        type="file"
+        ref={fileInputRef}
+        onChange={(e) =>
+          setEmail({ ...email, attachments: Array.from(e.target.files) })
+        }
+        multiple
+        className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
       />
       <button
         type="submit"

@@ -16,7 +16,8 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<DialPad />} />
+        <Route path="/" element={<Main />} />
+        <Route path="/dial" element={<DialPad />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/video" element={<VideoCall />} />

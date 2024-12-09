@@ -9,7 +9,7 @@ import {
 
 import { firebaseAuth, firebaseGoogleProvider } from "@/firebase/firebaseConfig"
 
-function Login({ setToken }) {
+function Login() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [loading, setLoading] = useState(true)
@@ -58,7 +58,7 @@ function Login({ setToken }) {
       const result = await signInWithPopup(firebaseAuth, firebaseGoogleProvider)
       const credential = GoogleAuthProvider.credentialFromResult(result)
       const { accessToken } = credential
-      console.log(credential)
+
       localStorage.setItem("googleapi_accessToken", accessToken)
       navigate(from, { replace: true })
     } catch (error) {
