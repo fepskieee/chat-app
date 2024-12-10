@@ -15,7 +15,7 @@ function Login() {
   const [loading, setLoading] = useState(true)
   const navigate = useNavigate()
   const location = useLocation()
-  const from = location.state?.from?.pathname || "/chat"
+  const from = location.state?.from?.pathname || "/"
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(firebaseAuth, (user) => {
@@ -35,6 +35,8 @@ function Login() {
 
   const handleLogin = async (e) => {
     e.preventDefault()
+
+    // localStorage.setItem("googleapi_accessToken", accessToken)
 
     try {
       const result = await signInWithEmailAndPassword(
@@ -101,7 +103,10 @@ function Login() {
       </button>
       <p className="mt-4">
         Don&#39;t have an account?
-        <button className="text-blue-500" onClick={() => navigate("/register")}>
+        <button
+          className="text-blue-500 ml-1"
+          onClick={() => navigate("/register")}
+        >
           Register
         </button>
       </p>

@@ -1,7 +1,7 @@
-import EmailRetriever from "./EmailRetriever"
+import EmailComposer from "./EmailComposer"
 
 function EmailLists() {
-  return <EmailRetriever />
+  return <EmailComposer />
 }
 
 export default EmailLists

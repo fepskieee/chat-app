@@ -1,75 +1,44 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
-
-import Login from "@/components/Login"
-import Register from "@/components/Register"
-import Chat from "@/components/Chat"
-import PrivateRoute from "@/components/PrivateRoute"
-import Inbox from "@/components/Inbox"
-import SendMessage from "@/components/SendMessage"
-import EmailComposer from "@/components/EmailComposer"
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  Navigate,
+} from "react-router-dom"
+import Sidebar from "./components/ui/Sidebar"
+import Header from "./components/ui/Header"
+import Login from "./components/Login"
+import Chat from "./components/Chat"
+import SendMessage from "./components/SendMessage"
 import EmailLists from "./components/EmailLists"
-import Main from "./components/ui/Main"
 import DialPad from "./components/DialPad"
-import VideoCall from "./components/VideoCall"
+import PrivateRoute from "./components/PrivateRoute"
+import Register from "./components/Register"
 
 function App() {
   return (
     <Router>
-      <Routes>
-        <Route path="/" element={<Main />} />
-        <Route path="/dial" element={<DialPad />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/video" element={<VideoCall />} />
-        <Route
-          path="/inbox"
-          element={
-            <PrivateRoute>
-              <Inbox />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/send-sms"
-          element={
-            <PrivateRoute>
-              <SendMessage />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/new-email"
-          element={
-            <PrivateRoute>
-              <EmailComposer />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/email"
-          element={
-            <PrivateRoute>
-              <EmailLists />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/chat"
-          element={
-            <PrivateRoute>
-              <Chat />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="*"
-          element={
-            <div>
-              <h1>404</h1>
-            </div>
-          }
-        />
-      </Routes>
+      <Header />
+      <div className="flex bg-gray-100 p-4 h-screen">
+        <Sidebar />
+        <main className="flex-grow ml-72 bg-gray-100">
+          <Routes>
+            <Route path="/" element={<Navigate to="/chat" />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route
+              path="/chat"
+              element={
+                <PrivateRoute>
+                  <Chat />
+                </PrivateRoute>
+              }
+            />
+            <Route path="/sms" element={<SendMessage />} />
+            <Route path="/phone" element={<DialPad />} />
+            <Route path="/email" element={<EmailLists />} />
+          </Routes>
+        </main>
+      </div>
     </Router>
   )
 }

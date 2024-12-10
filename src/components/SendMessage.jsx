@@ -1,4 +1,5 @@
 import { useState } from "react"
+import Inbox from "./Inbox"
 
 const SendMessage = () => {
   const [to, setTo] = useState("")
@@ -37,8 +38,8 @@ const SendMessage = () => {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-      <div className="bg-white shadow-md rounded-lg p-6 w-full max-w-md">
+    <div className="flex space-x-10">
+      <div className="bg-white shadow-md fixed left-72 top-64 transform -translate-y-1/2 rounded-lg p-6 max-w-lg">
         <h1 className="text-3xl font-semibold text-center text-blue-600 mb-6">
           Send SMS
         </h1>
@@ -52,6 +53,7 @@ const SendMessage = () => {
               <option value="+1">+1 (USA)</option>
               <option value="+44">+44 (UK)</option>
               <option value="+91">+91 (India)</option>
+              <option value="+63">+63 (PH)</option>
             </select>
             <input
               type="text"
@@ -88,6 +90,10 @@ const SendMessage = () => {
             Send SMS
           </button>
         </form>
+      </div>
+
+      <div className="bg-white shadow-md translate-x-96 rounded-lg p-4 max-w-screen-md max-h-[500px] overflow-y-auto">
+        <Inbox />
       </div>
     </div>
   )
